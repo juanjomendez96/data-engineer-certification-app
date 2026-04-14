@@ -1,0 +1,104 @@
+<instructions>
+Read the highly detailed SPEC.md file located in this directory. You are acting in the capacity of a Senior Staff Software Engineer and an expert Databricks Data Engineer. Your singular task is to implement the full application described in SPEC.md completely autonomously.
+
+First, initialize the application framework as defined in SPEC.md. Create all necessary directory structures, install required dependencies using terminal tools, and configure the project environments.
+Second, architect a robust data layer. You must create a JSON repository of examination questions. I have provided a set of <seed_examples> below. You must include all of these seed examples directly into the repository without modification.
+Third, acting as a domain expert, you must synthetically generate 40 additional, highly realistic, complex scenario-based questions that strictly adhere to the <exam_domains> and flawlessly match the extreme difficulty level demonstrated in the <seed_examples>.
+Fourth, implement the user interface, incorporating a strict 90-minute timer, a mechanism to randomly select 45 questions per session, and a final scoring mechanism that indicates pass/fail based on a strict 70% threshold.
+Finally, rigorously verify your work. Write a test script to validate that the JSON structure is perfectly formed and that the application compiles without errors. Run the application locally and fix any resulting terminal errors autonomously.
+</instructions>
+
+<exam_domains>
+- Databricks Intelligence Platform (10%)
+- Development and Ingestion (30%)
+- Data Processing & Transformations (31%)
+- Productionizing Data Pipelines (18%)
+- Data Governance & Quality (11%)
+</exam_domains>
+
+<seed_examples>
+Example 1: Delta Lake Architecture and Storage Organization
+Domain: Development and Ingestion
+Question: A data engineer is tasked with auditing a Databricks workspace to understand underlying cloud storage utilization. They are closely examining a newly created Delta table that has undergone multiple transactional updates. Which of the following statements accurately describes the physical storage organization of a Delta table within the Databricks Lakehouse architecture?
+Options:
+A. The table is stored as a single, highly compressed proprietary file containing the raw data, historical changes, and metadata.
+B. The table consists of a single file for data storage and completely separate, isolated files for metadata management.
+C. The table is stored as a collection of open-format files that contain the data, transaction history, metadata, and other attributes within a specified object storage directory.
+D. The table is hosted entirely within a centralized relational database management system residing exclusively in the Databricks control plane.
+Correct Answer: C
+Detailed Explanation: Delta tables do not exist as proprietary, monolithic files. Instead, they are stored as a collection of files directly within cloud object storage (such as AWS S3 or Azure Data Lake Storage). The underlying data is stored in the highly optimized, open-source Apache Parquet format. Alongside these Parquet data files, Delta Lake maintains a specialized _delta_log directory. This directory contains a sequence of JSON and Parquet files that durably record the complete transaction history, schema evolution, and metadata modifications, thereby providing robust ACID guarantees directly on top of the data lake infrastructure.Example 2: Data Lineage and Unity Catalog Tracing
+Domain: Data Governance & Quality
+Question: A highly regulated financial auditing team requires a data engineer to track the exact origin of a specific Key Performance Indicator (KPI) displayed on a production Databricks SQL dashboard. The underlying data pipeline utilizes multiple Bronze, Silver, and Gold Delta tables, complex Spark SQL transformations within notebooks, and orchestration via Databricks Workflows. Which of the following Databricks solutions provides the most efficient, natively integrated method to trace this data flow end-to-end?
+Options:
+A. Utilizing Delta Live Tables (DLT) DAGs to visually map dependencies across the entire workspace infrastructure.
+B. Implementing extensive custom logging within the Spark SQL notebooks to manually track all table read and write operations.
+C. Leveraging Unity Catalog Data Lineage to interactively visualize dependencies between the Delta tables, executing notebooks, automated jobs, and the final SQL dashboard, including deep column-level tracking.
+D. Executing manual SQL queries against the _delta_log transaction logs of the downstream Gold tables to identify the source notebooks.
+Correct Answer: C
+Detailed Explanation: Unity Catalog automatically captures and visualizes comprehensive data lineage across the entire Databricks Lakehouse platform ecosystem. It provides an interactive graph interface that traces end-to-end data flows, from original source tables through intermediate queries, notebooks, and jobs, all the way to the final consuming dashboards. Crucially for auditing purposes, it supports advanced column-level tracking, identifying exactly how a specific metric was transformed. DLT DAGs (Option A) are incorrect because they only display dependencies within the localized context of a specific DLT pipeline, not across the broader workspace tools and dashboards.Example 3: Dynamic Data Masking and Row Filters
+Domain: Data Governance & Quality
+Question: A data engineer needs to apply dynamic row-level security to a highly sensitive sales table managed centrally by Unity Catalog. The strict business requirement states that only members of the admin account group are permitted to view records from all global regions; all other users must be restricted to only seeing records where the region column strictly equals 'US'. The engineer correctly creates the following user-defined function: CREATE FUNCTION us_filter(region STRING) RETURN IF(IS_ACCOUNT_GROUP_MEMBER('admin'), true, region='US');.
+What is the correct SQL syntax required to apply this logic to the table without generating an error?
+Options:
+A. ALTER TABLE sales APPLY ROW FILTER us_filter;
+B. ALTER TABLE sales SET ROW FILTER us_filter ON (region);
+C. GRANT ROW FILTER us_filter ON TABLE sales TO users;
+D. CREATE VIEW us_sales AS SELECT * FROM sales WHERE us_filter(region);
+Correct Answer: B
+Detailed Explanation: In the Unity Catalog framework, dynamic row filters are applied directly to existing tables using the specific ALTER TABLE... SET ROW FILTER... ON (...) SQL syntax. The referenced function evaluates dynamically at query runtime based on the executing user's identity. Option D represents a legacy, highly inefficient approach to data restriction (creating separate, disconnected views for different user groups), which Unity Catalog's dynamic Row Filters specifically aim to replace, thereby dramatically simplifying governance by allowing a single table to securely serve multiple disparate user cohorts simultaneously.Example 4: Advanced Incremental Ingestion
+Domain: Development and Ingestion
+Question: A data engineering team is actively designing a pipeline to ingest raw JSON log files that arrive continuously and unpredictably in an Amazon S3 bucket. The schema of these JSON files is highly volatile, frequently including new, deeply nested columns without warning. The team requires a robust solution that guarantees exactly-once processing, scales efficiently without computationally expensive directory listing for every micro-batch, and gracefully handles schema evolution without causing pipeline failures. Which Databricks ingestion mechanism represents the BEST architectural choice?
+Options:
+A. Apache Spark Structured Streaming utilizing standard .format("json") read streams.
+B. Databricks Auto Loader utilizing .format("cloudFiles").
+C. Scheduled COPY INTO SQL commands executing every 5 minutes via automated Databricks Workflows.
+D. Delta Live Tables with a rigidly defined, static JSON schema definition.
+Correct Answer: B
+Detailed Explanation: Auto Loader is the purpose-built, highly optimized ingestion mechanism within Databricks designed specifically for incrementally and efficiently processing files as they continuously arrive in cloud object storage. By utilizing the cloudFiles format, it completely avoids the massive performance bottleneck of standard directory listing by employing highly efficient cloud file notifications or optimized listing techniques. Most importantly for this specific scenario, Auto Loader supports cloudFiles.schemaEvolutionMode, allowing it to dynamically handle schema drift, safely incorporating new and nested data changes without failing the ongoing pipeline.Example 5: Spark SQL and Complex Nested Data Types
+Domain: Data Processing & Transformations
+Question: A massive PySpark DataFrame contains a column named payload which stores a highly nested array of JSON objects, representing disparate user telemetry events. The data engineer must completely flatten this nested array to create individual, distinct rows for each telemetry event in order to perform temporal aggregations and downstream reporting. Which specific Spark SQL function or capability provides the primary mechanism for executing this operation?
+Options:
+A. The ability of advanced array functions to work with specific partitions and temporal windows.
+B. The use of the proprietary FLATTEN() function combined with a standard inner join operation.
+C. The ability of Spark SQL array functions, specifically the explode() function, to work with complex, nested data ingested from semi-structured JSON files.
+D. Forcibly casting the array column to a standard string type and utilizing complex regex pattern extraction.
+Correct Answer: C
+Detailed Explanation: Apache Spark SQL natively supports and easily processes complex data types such as arrays, maps, and structs, which are extremely frequently encountered when ingesting semi-structured JSON data into the Lakehouse. The explode() function (or its variant explode_outer()) is specifically designed by the Spark engine to take an array or map column and dynamically create a completely new row for each individual element found within the array, effectively flattening the deeply nested structure for standard downstream relational processing and aggregations.Example 6: Delta Live Tables Data Quality Expectations
+Domain: Productionizing Data Pipelines
+Question: A data engineer is developing a complex Delta Live Tables (DLT) pipeline. A specific transformation step processes user registration data into the Silver layer. A strict constraint must be applied ensuring the email_address column is never null. However, if a record with a null email address is encountered, the pipeline must discard the invalid record but absolutely continue processing the remaining valid data without failing the entire update process. Which specific expectation syntax must be utilized to achieve this?
+Options:
+A. @expect("valid_email", "email_address IS NOT NULL")
+B. CONSTRAINT valid_email EXPECT (email_address IS NOT NULL) ON VIOLATION DROP ROW
+C. CONSTRAINT valid_email EXPECT (email_address IS NOT NULL) ON VIOLATION FAIL UPDATE
+D. CONSTRAINT valid_email EXPECT (email_address IS NOT NULL)
+Correct Answer: B
+Detailed Explanation: Within the DLT framework, automated data quality is managed declaratively via Expectations. To drop invalid records entirely while allowing the rest of the pipeline to continue processing seamlessly, the specific ON VIOLATION DROP ROW action is appended to the constraint definition. Conversely, ON VIOLATION FAIL UPDATE would violently halt the entire pipeline execution upon finding a single null, and a standard EXPECT without a declared violation action would merely record the failure metric in the event log while dangerously allowing the null data to pass into the target target table.Example 7: Databricks Medallion Architecture Application
+Domain: Data Processing & Transformations
+Question: A data engineering team is constructing a data pipeline adhering strictly to the Medallion Architecture within the Databricks Lakehouse. They have ingested raw transactional data from an external API and raw customer demographic data from a CRM system into their initial layer. The next step in the pipeline requires cleansing the data, filtering out null values, and crucially, joining the transactional data with the customer demographic data to create a single, unified view of customer activity. Into which architectural layer should this transformed, joined data be written?
+Options:
+A. The Bronze Layer.
+B. The Silver Layer.
+C. The Gold Layer.
+D. The Platinum Layer.
+Correct Answer: B
+Detailed Explanation: The Medallion Architecture is a data design pattern used to logically organize data in a Lakehouse. The Bronze layer acts as a raw data repository, maintaining the data exactly as it was ingested without modification. The Silver layer is specifically designated as the enrichment layer; this is where data cleansing, filtering, and the joining of disparate Bronze tables occur to create a conformed, enterprise-ready view of the data. The Gold layer is reserved for highly aggregated, business-level reporting datasets, while a 'Platinum' layer does not exist in standard Databricks architecture documentation.Example 8: Databricks Control Plane Operations
+Domain: Databricks Intelligence Platform
+Question: While reviewing the classic Databricks Lakehouse deployment architecture for compliance purposes, a corporate security auditor wants to know exactly where the interactive notebooks, automated job configurations, and the primary web application user interface physically reside and execute. Which specific component of the Databricks architecture securely hosts these elements?
+Options:
+A. The customer's isolated Virtual Private Cloud (VPC) or VNet.
+B. The Databricks Data Plane.
+C. The Databricks Control Plane.
+D. The JDBC external data source integration layer.
+Correct Answer: C
+Detailed Explanation: The Databricks system architecture is fundamentally bifurcated for security and scalability. The Control Plane is securely hosted and managed directly by Databricks within their own cloud account. It encompasses the web application (UI), notebook code storage, workspace management, job scheduling mechanisms, and cluster management controls. The Data Plane, conversely, resides entirely within the customer's cloud environment, hosting the active compute clusters and executing the raw data processing directly against the customer's secure object storage.
+</seed_examples>
+
+<formatting_rules>
+- Use explicit types and strict linting throughout the codebase.
+- The UI must clearly render SQL and Python code blocks utilizing advanced syntax highlighting.
+- The JSON schema for the questions must strictly include the following keys: id, domain, question_text, code_snippet (optional), options (an array of exactly 4 strings), correct_answer, and detailed_explanation.
+</formatting_rules>
+
+<verification_criteria>
+Create a dedicated file named `verify_data.js` or `verify_data.py` (depending on the stack) that meticulously validates the generated JSON file. It must ensure that exactly 45 or more questions exist, every single question has exactly one correct answer matching an available option, and all 5 official domains are adequately represented based on their percentage weights. Execute this script autonomously. If it fails, iteratively fix the JSON data until the script passes completely.
+</verification_criteria>
