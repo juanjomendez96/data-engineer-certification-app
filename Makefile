@@ -10,7 +10,7 @@ export PATH := /opt/homebrew/bin:$(PATH)
 # ─── Default ──────────────────────────────────────────────────────────────────
 .DEFAULT_GOAL := help
 
-.PHONY: help install dev build start validate typecheck test clean
+.PHONY: help install dev build start stop validate typecheck test clean kill-port
 
 help:
 	@echo ""
@@ -24,6 +24,8 @@ help:
 	@echo "  make typecheck  Run TypeScript type-check (no emit)"
 	@echo "  make test       Run validate + typecheck (full CI check)"
 	@echo "  make clean      Remove .next build artefacts"
+	@echo "  make stop       Stop the running dev/production server"
+	@echo "  make kill-port  Kill any process occupying port $(PORT)"
 	@echo ""
 
 # ─── Install ──────────────────────────────────────────────────────────────────
@@ -39,8 +41,17 @@ install:
 	$(NPM_BIN) install
 	@echo "✓ Install complete."
 
+# ─── Port management ──────────────────────────────────────────────────────────
+kill-port:
+	@PID=$$(lsof -ti :$(PORT)) ; \
+	if [ -n "$$PID" ]; then \
+		echo "→ Freeing port $(PORT) (PID $$PID)..."; \
+		kill -9 $$PID; \
+		sleep 1; \
+	fi
+
 # ─── Development ──────────────────────────────────────────────────────────────
-dev:
+dev: kill-port
 	@echo "→ Starting dev server at http://localhost:$(PORT)"
 	$(NEXT) dev --port $(PORT)
 
@@ -50,9 +61,19 @@ build: validate
 	$(NEXT) build
 	@echo "✓ Build complete."
 
-start:
+start: kill-port
 	@echo "→ Starting production server at http://localhost:$(PORT)"
 	$(NEXT) start --port $(PORT)
+
+stop:
+	@PID=$$(lsof -ti :$(PORT)) ; \
+	if [ -n "$$PID" ]; then \
+		echo "→ Stopping server (PID $$PID) on port $(PORT)..."; \
+		kill $$PID; \
+		echo "✓ Server stopped."; \
+	else \
+		echo "  No server running on port $(PORT)."; \
+	fi
 
 # ─── Testing & Validation ─────────────────────────────────────────────────────
 validate:
