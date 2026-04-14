@@ -182,3 +182,4 @@ The 70% pass threshold is applied to `weighted_score`, not to `total_correct / 4
 |---|---|
 | `examSession` | Active exam session (managed by Zustand `persist`) |
 | `examHistory` | Last 20 attempt summaries |
+
