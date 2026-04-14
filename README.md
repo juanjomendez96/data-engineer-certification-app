@@ -1,5 +1,7 @@
 # Databricks Certified Data Engineer Associate — Exam Simulator
 
+**Live site:** [juanjomendez96.github.io/data-engineer-certification-app](https://juanjomendez96.github.io/data-engineer-certification-app)
+
 A single-page web application that simulates the **Databricks Certified Data Engineer Associate** exam. 45 questions, 90-minute countdown timer, weighted domain scoring, and a full per-domain breakdown on the results screen.
 
 ---
@@ -98,6 +100,28 @@ A single-page web application that simulates the **Databricks Certified Data Eng
 make install   # Install Node.js + npm dependencies
 make dev       # Start dev server at http://localhost:3000
 ```
+
+---
+
+## Deployment — GitHub Pages
+
+The app is automatically deployed to GitHub Pages on every push to `master` via GitHub Actions (`.github/workflows/deploy.yml`).
+
+The workflow:
+1. Installs dependencies with `npm ci`
+2. Validates `questions.json` with `npm run validate:questions`
+3. Compiles a static export (`next build` → `out/`)
+4. Deploys the `out/` directory to the `github-pages` environment
+
+To trigger a deployment manually:
+
+```bash
+make deploy   # Commits any pending changes, pushes to main, and prints the live URL
+```
+
+> **First-time setup:** In the GitHub repository go to **Settings → Pages** and set the source to **GitHub Actions**.
+
+**Live URL:** `https://juanjomendez96.github.io/data-engineer-certification-app`
 
 ---
 

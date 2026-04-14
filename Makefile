@@ -4,13 +4,15 @@ NEXT       := node node_modules/next/dist/bin/next
 TSX        := node node_modules/.bin/tsx
 TSC        := node node_modules/typescript/bin/tsc
 PORT       := 3000
+REPO       := juanjomendez96/data-engineer-certification-app
+PAGES_URL  := https://juanjomendez96.github.io/data-engineer-certification-app
 
 export PATH := /opt/homebrew/bin:$(PATH)
 
 # ─── Default ──────────────────────────────────────────────────────────────────
 .DEFAULT_GOAL := help
 
-.PHONY: help install dev build start stop validate typecheck test clean kill-port
+.PHONY: help install dev build export start stop deploy validate typecheck test clean kill-port
 
 help:
 	@echo ""
@@ -18,14 +20,17 @@ help:
 	@echo ""
 	@echo "  make install    Install Node.js (via Homebrew) + npm dependencies"
 	@echo "  make dev        Start the development server on http://localhost:$(PORT)"
-	@echo "  make build      Validate questions + compile a production build"
+	@echo "  make build      Validate questions + compile static export (out/)"
 	@echo "  make start      Serve the production build on http://localhost:$(PORT)"
+	@echo "  make stop       Stop the running dev/production server"
+	@echo "  make deploy     Commit + push to main → triggers GitHub Pages deploy"
 	@echo "  make validate   Validate questions.json schema and domain counts"
 	@echo "  make typecheck  Run TypeScript type-check (no emit)"
 	@echo "  make test       Run validate + typecheck (full CI check)"
-	@echo "  make clean      Remove .next build artefacts"
-	@echo "  make stop       Stop the running dev/production server"
+	@echo "  make clean      Remove .next and out/ build artefacts"
 	@echo "  make kill-port  Kill any process occupying port $(PORT)"
+	@echo ""
+	@echo "  Live site → $(PAGES_URL)"
 	@echo ""
 
 # ─── Install ──────────────────────────────────────────────────────────────────
@@ -55,15 +60,16 @@ dev: kill-port
 	@echo "→ Starting dev server at http://localhost:$(PORT)"
 	$(NEXT) dev --port $(PORT)
 
-# ─── Production build ─────────────────────────────────────────────────────────
+# ─── Production build (static export for GitHub Pages) ────────────────────────
 build: validate
-	@echo "→ Building production bundle..."
-	$(NEXT) build
-	@echo "✓ Build complete."
+	@echo "→ Building static export..."
+	NODE_ENV=production $(NEXT) build
+	@echo "✓ Static export written to out/"
 
 start: kill-port
-	@echo "→ Starting production server at http://localhost:$(PORT)"
-	$(NEXT) start --port $(PORT)
+	@echo "→ Serving production build at http://localhost:$(PORT)"
+	@echo "  (uses npx serve — install with: npm i -g serve)"
+	npx serve out -p $(PORT)
 
 stop:
 	@PID=$$(lsof -ti :$(PORT)) ; \
@@ -74,6 +80,20 @@ stop:
 	else \
 		echo "  No server running on port $(PORT)."; \
 	fi
+
+# ─── GitHub Pages deploy ──────────────────────────────────────────────────────
+deploy:
+	@echo "→ Staging all changes..."
+	git add -A
+	@if git diff --cached --quiet; then \
+		echo "  Nothing to commit — pushing existing HEAD."; \
+	else \
+		git commit -m "deploy: update application"; \
+	fi
+	@echo "→ Pushing to main..."
+	git push origin master
+	@echo "✓ Push complete. GitHub Actions will build and deploy."
+	@echo "  Live at: $(PAGES_URL)"
 
 # ─── Testing & Validation ─────────────────────────────────────────────────────
 validate:
@@ -91,6 +111,6 @@ test: validate typecheck
 
 # ─── Clean ────────────────────────────────────────────────────────────────────
 clean:
-	@echo "→ Removing .next build artefacts..."
-	rm -rf .next
+	@echo "→ Removing build artefacts..."
+	rm -rf .next out
 	@echo "✓ Clean complete."
