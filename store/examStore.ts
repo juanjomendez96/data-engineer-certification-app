@@ -9,6 +9,8 @@ import { scoreSession } from '../lib/scoring';
 interface ExamStore {
   session: ExamSession | null;
   lastResult: ExamResult | null;
+  studentName: string;
+  setStudentName: (name: string) => void;
   startExam: () => void;
   resumeExam: () => void;
   abandonExam: () => void;
@@ -23,6 +25,9 @@ export const useExamStore = create<ExamStore>()(
     (set, get) => ({
       session: null,
       lastResult: null,
+      studentName: '',
+
+      setStudentName: (name) => set({ studentName: name }),
 
       startExam: () => {
         const questions = sampleExam();
@@ -71,20 +76,21 @@ export const useExamStore = create<ExamStore>()(
         })),
 
       submitExam: (expired = false) => {
-        const { session } = get();
+        const { session, studentName } = get();
         if (!session) throw new Error('No active session');
         const result = scoreSession(session, expired);
         const historyRaw = localStorage.getItem('examHistory') ?? '[]';
-        const history = JSON.parse(historyRaw) as Array<{
-          answeredAt: number; percentage: number; passed: boolean; durationSeconds: number;
-        }>;
+        const history = JSON.parse(historyRaw) as import('../lib/types').HistoryEntry[];
         history.unshift({
           answeredAt: result.answeredAt,
           percentage: result.percentage,
           passed: result.passed,
           durationSeconds: result.durationSeconds,
+          studentName: studentName.trim() || 'Anonymous',
+          questionIds: result.questionIds,
+          answers: result.answers,
         });
-        localStorage.setItem('examHistory', JSON.stringify(history.slice(0, 20)));
+        localStorage.setItem('examHistory', JSON.stringify(history.slice(0, 100)));
         set({ session: null, lastResult: result });
         return result;
       },
@@ -92,7 +98,7 @@ export const useExamStore = create<ExamStore>()(
     {
       name: 'examSession',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ session: state.session }),
+      partialize: (state) => ({ session: state.session, studentName: state.studentName }),
     }
   )
 );

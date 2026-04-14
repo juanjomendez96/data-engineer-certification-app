@@ -57,4 +57,7 @@ export interface HistoryEntry {
   percentage: number;
   passed: boolean;
   durationSeconds: number;
+  studentName: string;
+  questionIds: string[];
+  answers: Record<string, number>;
 }

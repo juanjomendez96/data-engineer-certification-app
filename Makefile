@@ -12,7 +12,7 @@ export PATH := /opt/homebrew/bin:$(PATH)
 # ─── Default ──────────────────────────────────────────────────────────────────
 .DEFAULT_GOAL := help
 
-.PHONY: help install dev build export start stop deploy validate typecheck test clean kill-port
+.PHONY: help install dev build export start stop deploy validate typecheck test clean kill-port clear-history
 
 help:
 	@echo ""
@@ -23,12 +23,13 @@ help:
 	@echo "  make build      Validate questions + compile static export (out/)"
 	@echo "  make start      Serve the production build on http://localhost:$(PORT)"
 	@echo "  make stop       Stop the running dev/production server"
-	@echo "  make deploy     Commit + push to main → triggers GitHub Pages deploy"
+	@echo "  make deploy     Run test + build, then commit and push to master"
 	@echo "  make validate   Validate questions.json schema and domain counts"
 	@echo "  make typecheck  Run TypeScript type-check (no emit)"
 	@echo "  make test       Run validate + typecheck (full CI check)"
 	@echo "  make clean      Remove .next and out/ build artefacts"
-	@echo "  make kill-port  Kill any process occupying port $(PORT)"
+	@echo "  make clear-history  Clear all stored exam attempts from the browser"
+	@echo "  make kill-port      Kill any process occupying port $(PORT)"
 	@echo ""
 	@echo "  Live site → $(PAGES_URL)"
 	@echo ""
@@ -82,7 +83,7 @@ stop:
 	fi
 
 # ─── GitHub Pages deploy ──────────────────────────────────────────────────────
-deploy:
+deploy: test build
 	@echo "→ Staging all changes..."
 	git add -A
 	@if git diff --cached --quiet; then \
@@ -90,7 +91,7 @@ deploy:
 	else \
 		git commit -m "deploy: update application"; \
 	fi
-	@echo "→ Pushing to main..."
+	@echo "→ Pushing to master..."
 	git push origin master
 	@echo "✓ Push complete. GitHub Actions will build and deploy."
 	@echo "  Live at: $(PAGES_URL)"
@@ -108,6 +109,13 @@ typecheck:
 
 test: validate typecheck
 	@echo "✓ All checks passed."
+
+# ─── Clear browser history ────────────────────────────────────────────────────
+clear-history:
+	@echo "→ Opening browser to clear exam history..."
+	@open "http://localhost:$(PORT)/?clear=history" 2>/dev/null || \
+		xdg-open "http://localhost:$(PORT)/?clear=history" 2>/dev/null || \
+		echo "  Could not open browser automatically. Visit: http://localhost:$(PORT)/?clear=history"
 
 # ─── Clean ────────────────────────────────────────────────────────────────────
 clean:
