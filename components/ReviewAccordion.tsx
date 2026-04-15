@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { Question } from '@/lib/types';
+import { InlineMarkdown } from './InlineMarkdown';
+import { ExplanationMarkdown } from './ExplanationMarkdown';
 
 interface ReviewAccordionProps {
   questions: Question[];
@@ -67,13 +69,13 @@ export function ReviewAccordion({ questions, answers, highlightedHtmlMap }: Revi
                   {correct ? '✓' : '✗'}
                 </span>
                 <span className="text-slate-400 text-xs font-mono w-8">Q{i + 1}</span>
-                <span className="text-slate-200 text-sm truncate flex-1">{q.text}</span>
+                <span className="text-slate-200 text-sm truncate flex-1"><InlineMarkdown text={q.text} /></span>
                 <span className="text-slate-500 text-xs ml-2">{isOpen ? '▲' : '▼'}</span>
               </button>
 
               {isOpen && (
                 <div className="px-4 pb-4 pt-3 bg-slate-900 border-t border-slate-700 flex flex-col gap-3">
-                  <p className="text-slate-200 text-sm leading-relaxed">{q.text}</p>
+                  <p className="text-slate-200 text-sm leading-relaxed"><InlineMarkdown text={q.text} /></p>
 
                   {highlightedHtmlMap[q.id] && (
                     <div
@@ -105,7 +107,7 @@ export function ReviewAccordion({ questions, answers, highlightedHtmlMap }: Revi
                           <span className={cn(
                             isCorrect ? 'text-green-300' : isUser && !isCorrect ? 'text-red-300' : 'text-slate-400'
                           )}>
-                            {opt}
+                            <InlineMarkdown text={opt} />
                           </span>
                           {isCorrect && <span className="ml-auto text-green-400 text-xs font-semibold">✓ Correct</span>}
                           {isUser && !isCorrect && <span className="ml-auto text-red-400 text-xs font-semibold">✗ Your answer</span>}
@@ -114,9 +116,13 @@ export function ReviewAccordion({ questions, answers, highlightedHtmlMap }: Revi
                     })}
                   </div>
 
-                  <div className="mt-1 p-3 rounded bg-slate-800 border border-slate-600">
-                    <p className="text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wide">Explanation</p>
-                    <p className="text-slate-300 text-sm leading-relaxed">{q.explanation}</p>
+                  <div className="mt-2 rounded-lg bg-slate-950/60 border border-slate-600/50 overflow-hidden">
+                    <div className="px-3 py-2 bg-slate-800/60 border-b border-slate-700/50 flex items-center gap-2">
+                      <span className="text-xs font-semibold text-sky-400 uppercase tracking-wide">Explanation</span>
+                    </div>
+                    <div className="px-4 py-3">
+                      <ExplanationMarkdown text={q.explanation} />
+                    </div>
                   </div>
                 </div>
               )}

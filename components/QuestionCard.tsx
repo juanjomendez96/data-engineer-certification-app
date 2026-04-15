@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { InlineMarkdown } from './InlineMarkdown';
 
 interface QuestionCardProps {
   questionNumber: number;
@@ -28,7 +29,7 @@ export function QuestionCard({
       <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
         Question {questionNumber} of {totalQuestions}
       </p>
-      <p className="text-slate-100 text-base leading-relaxed">{text}</p>
+      <p className="text-slate-100 text-base leading-relaxed"><InlineMarkdown text={text} /></p>
 
       {highlightedHtml && (
         <div
@@ -57,7 +58,7 @@ export function QuestionCard({
               )}>
                 {OPTION_LABELS[i]}
               </span>
-              <span className="leading-relaxed">{option}</span>
+              <span className="leading-relaxed"><InlineMarkdown text={option} /></span>
             </button>
           );
         })}
