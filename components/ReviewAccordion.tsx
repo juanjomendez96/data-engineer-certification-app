@@ -105,6 +105,7 @@ export function ReviewAccordion({ questions, answers, highlightedHtmlMap }: Revi
                             {LABELS[oi]}.
                           </span>
                           <span className={cn(
+                            'min-w-0 flex-1',
                             isCorrect ? 'text-green-300' : isUser && !isCorrect ? 'text-red-300' : 'text-slate-400'
                           )}>
                             <InlineMarkdown text={opt} />

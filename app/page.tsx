@@ -24,6 +24,7 @@ function LandingContent() {
   const [filterName, setFilterName] = useState('');
   const [nameError, setNameError] = useState(false);
   const [cleared, setCleared] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -175,24 +176,56 @@ function LandingContent() {
               </h2>
 
               <div className="flex items-center gap-2">
-                <span className="text-slate-500 text-xs">🔍</span>
-                <input
-                  type="text"
-                  value={filterName}
-                  onChange={e => setFilterName(e.target.value)}
-                  placeholder="Filter by name…"
-                  className="rounded-lg border border-slate-600 bg-slate-800 text-slate-200 placeholder-slate-500 text-xs px-3 py-1.5 w-40 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
-                />
-                {filterName && (
+                {confirmClear ? (
+                  <>
+                    <span className="text-xs text-slate-400">Clear all attempts?</span>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('examHistory');
+                        setHistory([]);
+                        setCleared(true);
+                        setConfirmClear(false);
+                      }}
+                      className="text-xs text-red-400 hover:text-red-300 font-semibold transition-colors"
+                    >
+                      Yes, clear
+                    </button>
+                    <button
+                      onClick={() => setConfirmClear(false)}
+                      className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
                   <button
-                    onClick={() => setFilterName('')}
-                    className="text-slate-500 hover:text-slate-300 text-xs transition-colors"
-                    aria-label="Clear filter"
+                    onClick={() => setConfirmClear(true)}
+                    className="text-xs text-slate-500 hover:text-red-400 transition-colors"
                   >
-                    ✕
+                    Clear all
                   </button>
                 )}
               </div>
+            </div>
+
+            <div className="flex items-center gap-2 w-full">
+              <span className="text-slate-500 text-xs">🔍</span>
+              <input
+                type="text"
+                value={filterName}
+                onChange={e => setFilterName(e.target.value)}
+                placeholder="Filter by name…"
+                className="rounded-lg border border-slate-600 bg-slate-800 text-slate-200 placeholder-slate-500 text-xs px-3 py-1.5 flex-1 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
+              />
+              {filterName && (
+                <button
+                  onClick={() => setFilterName('')}
+                  className="text-slate-500 hover:text-slate-300 text-xs transition-colors"
+                  aria-label="Clear filter"
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
             {filteredHistory.length === 0 ? (

@@ -58,7 +58,7 @@ export function QuestionCard({
               )}>
                 {OPTION_LABELS[i]}
               </span>
-              <span className="leading-relaxed"><InlineMarkdown text={option} /></span>
+              <span className="leading-relaxed min-w-0 flex-1"><InlineMarkdown text={option} /></span>
             </button>
           );
         })}

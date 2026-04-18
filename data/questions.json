@@ -543,10 +543,10 @@
     "difficulty": 2,
     "text": "A data engineer needs to compute the **maximum** and **minimum** transaction amounts for each customer from a DataFrame `df` with columns `customer_id` and `transaction_amount`. Which PySpark code correctly produces this result?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```python\nresult = df.agg(\n    F.max(\"transaction_amount\").alias(\"max_amount\"),\n    F.min(\"transaction_amount\").alias(\"min_amount\")\n)```",
+      "```python\nresult = df.groupBy(\"customer_id\").agg(\n    F.max(\"transaction_amount\").alias(\"max_amount\"),\n    F.min(\"transaction_amount\").alias(\"min_amount\")\n)```",
+      "```python\nresult = df.groupBy(\"customer_id\").select(\n    F.max(\"transaction_amount\").alias(\"max_amount\"),\n    F.min(\"transaction_amount\").alias(\"min_amount\")\n)```",
+      "```python\nresult = df.partitionBy(\"customer_id\").agg(\n    F.max(\"transaction_amount\").alias(\"max_amount\"),\n    F.min(\"transaction_amount\").alias(\"min_amount\")\n)```"
     ],
     "answer": 1,
     "explanation": "groupBy(\"customer_id\") groups the DataFrame by customer, and .agg() applies aggregate functions within each group. Using named pyspark.sql.functions (F.max, F.min) with .alias() creates properly named output columns. Option A computes global max/min (not per customer). Option C: .select() is not valid after .groupBy() for aggregations. Option D: partitionBy() is used for writing data (e.g., DataFrameWriter), not for grouping."
@@ -582,10 +582,10 @@
     "difficulty": 2,
     "text": "A data engineer needs to create a SQL **User Defined Function (UDF)** called `apply_tax` that accepts a `FLOAT` price and returns the price with 8% tax applied (price * 1.08). Which code block correctly defines this UDF?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```sql\nDEFINE FUNCTION apply_tax(price FLOAT)\nOUTPUT FLOAT\nRETURN price * 1.08```",
+      "```sql\nCREATE OR REPLACE FUNCTION apply_tax(price FLOAT)\nRETURNS FLOAT\nRETURN price * 1.08```",
+      "```sql\nCREATE UDF apply_tax\nRETURNS FLOAT\nPARAMETERS (price FLOAT)\nRETURN price * 1.08```",
+      "```sql\nCREATE OR REPLACE FUNCTION apply_tax\nAS (price FLOAT) -> price * 1.08```"
     ],
     "answer": 1,
     "explanation": "The correct SQL UDF syntax in Databricks is: sql CREATE [OR REPLACE] FUNCTION function_name(parameter_name data_type [, ...]) RETURNS return_data_type RETURN expression; Option A uses invalid keywords (DEFINE, OUTPUT). Option C uses incorrect syntax (CREATE UDF, wrong parameter order). Option D uses lambda-style syntax that is not valid for SQL UDFs."
@@ -599,10 +599,10 @@
     "difficulty": 2,
     "text": "A data engineer needs to combine all students from two tables — `students_course_1` and `students_course_2` — into a single result set **without duplicate records**. Which SQL query achieves this?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```sql\nSELECT * FROM students_course_1\nUNION ALL\nSELECT * FROM students_course_2```",
+      "```sql\nSELECT * FROM students_course_1\nINTERSECT\nSELECT * FROM students_course_2```",
+      "```sql\nSELECT * FROM students_course_1\nUNION\nSELECT * FROM students_course_2```",
+      "```sql\nSELECT * FROM students_course_1\nJOIN students_course_2\nUSING (student_id)```"
     ],
     "answer": 2,
     "explanation": "UNION combines the result sets of two queries and removes duplicate rows by default (equivalent to UNION DISTINCT). Both subqueries must have the same number of columns with compatible types. UNION ALL (A) preserves duplicates. INTERSECT (B) returns only rows that appear in both result sets. JOIN (D) combines columns horizontally, not rows vertically, and would produce duplicate rows for students in both courses."
@@ -775,10 +775,10 @@
     "difficulty": 2,
     "text": "A data engineer is creating a Delta Live Tables pipeline that reads Parquet files from Google Cloud Storage and creates a Delta table. Which Python code block **correctly** defines a DLT table from GCS Parquet files?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```python\n@dlt.source\ndef raw_data():\n    return spark.read.parquet(\"gs://bucket/path/\")```",
+      "```python\n@dlt.table\ndef raw_data():\n    return spark.read.parquet(\"gs://bucket/path/\")```",
+      "```python\n@dlt.streaming_table\ndef raw_data():\n    return spark.read.parquet(\"gs://bucket/path/\")```",
+      "```python\ndlt.create_table(\n    name=\"raw_data\",\n    path=\"gs://bucket/path/\",\n    format=\"parquet\"\n)```"
     ],
     "answer": 1,
     "explanation": "In Delta Live Tables, the @dlt.table decorator defines a function that returns a DataFrame, which DLT uses to create or refresh the corresponding Delta table. spark.read.parquet() reads Parquet files from the specified path (GCS, S3, ADLS, or local). @dlt.source (A) is not a valid DLT decorator. @dlt.streaming_table (C) is not valid — for streaming, use @dlt.table with spark.readStream. Option D uses an invalid imperative API."
@@ -929,10 +929,10 @@
     "difficulty": 2,
     "text": "A data scientist from the marketing department needs **read-only access** to the `customer_insights` table in the `bi.analytics` catalog/schema hierarchy. Following the principle of least privilege, which set of SQL commands correctly grants access?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```sql\nGRANT SELECT ON TABLE bi.analytics.customer_insights\nTO `data_scientist@company.com`;```",
+      "```sql\nGRANT USE CATALOG ON CATALOG bi TO `data_scientist@company.com`;\nGRANT USE SCHEMA ON SCHEMA bi.analytics TO `data_scientist@company.com`;\nGRANT SELECT ON TABLE bi.analytics.customer_insights TO `data_scientist@company.com`;```",
+      "```sql\nGRANT ALL PRIVILEGES ON CATALOG bi\nTO `data_scientist@company.com`;```",
+      "```sql\nGRANT USE CATALOG ON CATALOG bi TO `data_scientist@company.com`;\nGRANT SELECT ON SCHEMA bi.analytics TO `data_scientist@company.com`;```"
     ],
     "answer": 1,
     "explanation": "In Unity Catalog, accessing a table requires a three-level permission chain: 1. USE CATALOG on the parent catalog 2. USE SCHEMA on the parent schema 3. SELECT on the specific table All three must be granted. Without USE CATALOG and USE SCHEMA, even having SELECT on the table will not allow access. Option A only grants table-level SELECT but is missing the catalog and schema traverse permissions. Option C grants excessive privileges on the entire catalog. Option D grants schema-level SELECT (broader than needed) instead of table-level."
@@ -1600,10 +1600,10 @@
     "difficulty": 2,
     "text": "A data engineer needs to compute the **count of distinct** customer IDs per region from a PySpark DataFrame. Which code correctly achieves this?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```python\nresult = df.groupBy(\"region\").agg(\n    F.count(\"customer_id\").alias(\"customer_count\")\n)```",
+      "```python\nresult = df.groupBy(\"region\").agg(\n    F.countDistinct(\"customer_id\").alias(\"customer_count\")\n)```",
+      "```python\nresult = df.groupBy(\"region\").agg(\n    F.distinct(\"customer_id\").alias(\"customer_count\")\n)```",
+      "```python\nresult = df.groupBy(\"region\").count().distinct(\"customer_id\")```"
     ],
     "answer": 1,
     "explanation": "pyspark.sql.functions.countDistinct() counts the number of unique non-null values in a column within each group. It is the PySpark equivalent of COUNT(DISTINCT column) in SQL. F.count() (A) counts all non-null values including duplicates. F.distinct() (C) is not an aggregate function — it does not exist in pyspark.sql.functions. Option D uses incorrect chaining syntax for .count()."
@@ -1770,10 +1770,10 @@
     "difficulty": 2,
     "text": "A data engineer needs to define a **streaming** DLT table that continuously reads new records from a Delta table `ecommerce.raw.clickstream` registered in Unity Catalog. Which code correctly implements this?",
     "options": [
-      "",
-      "",
-      "",
-      ""
+      "```python\n@dlt.table\ndef clickstream():\n    return spark.read.table(\"ecommerce.raw.clickstream\")```",
+      "```python\n@dlt.streaming_table\ndef clickstream():\n    return spark.readStream.table(\"ecommerce.raw.clickstream\")```",
+      "```python\n@dlt.table\ndef clickstream():\n    return spark.readStream.table(\"ecommerce.raw.clickstream\")```",
+      "```python\n@dlt.live_table\ndef clickstream():\n    return dlt.read_stream(\"ecommerce.raw.clickstream\")```"
     ],
     "answer": 2,
     "explanation": "To create a streaming DLT table:\n\n- Use the @dlt.table decorator (not @dlt.streaming_table — this decorator does not exist).\n- Return a streaming DataFrame using spark.readStream.table(...). The @dlt.table decorator is used for both batch and streaming tables — the distinction is whether the returned DataFrame is a streaming or batch DataFrame. Option A uses spark.read (batch) — this creates a batch DLT table, not a streaming one. Option B uses a non-existent decorator. Option D uses @dlt.live_table and dlt.read_stream() which are not valid DLT APIs."
