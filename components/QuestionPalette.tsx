@@ -25,12 +25,12 @@ export function QuestionPalette({ slots, onJump, onSubmit }: QuestionPaletteProp
             onClick={() => onJump(slot.index)}
             className={cn(
               'w-9 h-9 rounded text-xs font-semibold transition-colors',
-              slot.current && 'ring-2 ring-white',
+              slot.current && 'ring-2 ring-red-500',
               slot.flagged
                 ? 'bg-yellow-500 text-black'
                 : slot.answered
                 ? 'bg-red-600 text-white'
-                : 'bg-slate-700 text-slate-400'
+                : 'bg-canvas-hover text-ink-muted'
             )}
           >
             {slot.index + 1}
@@ -38,9 +38,9 @@ export function QuestionPalette({ slots, onJump, onSubmit }: QuestionPaletteProp
         ))}
       </div>
 
-      <div className="flex flex-col gap-1 text-xs text-slate-400 mt-1">
+      <div className="flex flex-col gap-1 text-xs text-ink-muted mt-1">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-sm bg-slate-700 inline-block" /> Unanswered
+          <span className="w-3 h-3 rounded-sm bg-canvas-hover inline-block" /> Unanswered
         </div>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-sm bg-red-600 inline-block" /> Answered

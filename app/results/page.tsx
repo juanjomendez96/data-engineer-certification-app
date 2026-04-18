@@ -63,34 +63,34 @@ function ResultsContent() {
     <main className="max-w-3xl mx-auto px-4 py-10 flex flex-col gap-8">
       {/* Expired banner */}
       {expired && (
-        <div className="rounded-lg bg-yellow-900/30 border border-yellow-600 text-yellow-300 px-4 py-3 text-sm font-medium">
+        <div className="rounded-lg bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-500 dark:border-yellow-600 text-yellow-800 dark:text-yellow-300 px-4 py-3 text-sm font-medium">
           ⚠ Time expired — exam was auto-submitted
         </div>
       )}
 
       {/* Score section */}
-      <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6 flex flex-col sm:flex-row gap-6 items-center">
+      <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6 flex flex-col sm:flex-row gap-6 items-center">
         <ScoreGauge percentage={lastResult.percentage} passed={lastResult.passed} />
         <div className="flex flex-col gap-2 text-sm">
-          <div className={`text-2xl font-bold ${lastResult.passed ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`text-2xl font-bold ${lastResult.passed ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
             {lastResult.passed ? '✓ PASS' : '✗ FAIL'}
           </div>
-          <div className="text-slate-300">
-            Score: <span className="font-mono font-semibold text-slate-100">{lastResult.percentage.toFixed(1)}%</span>
+          <div className="text-ink-secondary">
+            Score: <span className="font-mono font-semibold text-ink-primary">{lastResult.percentage.toFixed(1)}%</span>
           </div>
-          <div className="text-slate-400">Passing threshold: <span className="font-mono">70.0%</span></div>
-          <div className="text-slate-400">
-            Answered: <span className="text-slate-200">{lastResult.totalCorrect}/{lastResult.totalQuestions} correct</span>
+          <div className="text-ink-muted">Passing threshold: <span className="font-mono">70.0%</span></div>
+          <div className="text-ink-muted">
+            Answered: <span className="text-ink-primary">{lastResult.totalCorrect}/{lastResult.totalQuestions} correct</span>
           </div>
-          <div className="text-slate-400">
-            Duration: <span className="text-slate-200">{formatDuration(lastResult.durationSeconds)}</span>
+          <div className="text-ink-muted">
+            Duration: <span className="text-ink-primary">{formatDuration(lastResult.durationSeconds)}</span>
           </div>
         </div>
       </div>
 
       {/* Domain breakdown */}
-      <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6 flex flex-col gap-4">
-        <h2 className="text-slate-100 font-semibold text-lg">Domain Breakdown</h2>
+      <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6 flex flex-col gap-4">
+        <h2 className="text-ink-primary font-semibold text-lg">Domain Breakdown</h2>
         {Object.entries(DOMAIN_CONFIG).map(([key, meta]) => {
           const dr = lastResult.domains[key as keyof typeof lastResult.domains];
           if (!dr) return null;
@@ -108,7 +108,7 @@ function ResultsContent() {
       </div>
 
       {/* Review accordion */}
-      <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6">
+      <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6">
         <ReviewAccordion
           questions={questions}
           answers={lastResult.answers}
@@ -131,7 +131,7 @@ function ResultsContent() {
 
 export default function ResultsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-400">Loading results...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-ink-muted">Loading results...</div>}>
       <ResultsContent />
     </Suspense>
   );

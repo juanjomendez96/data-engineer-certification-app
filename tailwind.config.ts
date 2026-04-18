@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -20,6 +21,24 @@ const config: Config = {
           fail: '#FC8181',
           warn: '#ECC94B',
           flag: '#F6AD55',
+        },
+        canvas: {
+          base:     'var(--canvas-base)',
+          surface:  'var(--canvas-surface)',
+          elevated: 'var(--canvas-elevated)',
+          hover:    'var(--canvas-hover)',
+          sunken:   'var(--canvas-sunken)',
+        },
+        ink: {
+          primary:   'var(--ink-primary)',
+          secondary: 'var(--ink-secondary)',
+          muted:     'var(--ink-muted)',
+          subtle:    'var(--ink-subtle)',
+        },
+        line: {
+          DEFAULT: 'var(--line-default)',
+          subtle:  'var(--line-subtle)',
+          strong:  'var(--line-strong)',
         },
       },
     },

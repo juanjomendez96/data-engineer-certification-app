@@ -14,7 +14,7 @@ export async function CodeBlock({ snippet, language }: CodeBlockProps) {
 
   return (
     <div
-      className="rounded-md overflow-x-auto text-sm my-4 border border-slate-700"
+      className="rounded-md overflow-x-auto text-sm my-4 border border-line-subtle"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

@@ -29,6 +29,8 @@ export interface ExamSession {
   answers: Record<string, number>;
   flags: Record<string, boolean>;
   currentIndex: number;
+  pausedAt: number | null;
+  totalPausedMs: number;
 }
 
 export interface DomainResult {

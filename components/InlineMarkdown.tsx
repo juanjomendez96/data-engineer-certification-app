@@ -8,7 +8,7 @@ export function InlineMarkdown({ text }: { text: string }) {
   const fencedMatch = text.match(/^```(\w*)\n([\s\S]*?)```$/);
   if (fencedMatch) {
     return (
-      <pre className="rounded-md bg-slate-950 border border-slate-700 px-3 py-2 text-xs font-mono text-slate-200 overflow-x-auto whitespace-pre">
+      <pre className="rounded-md bg-canvas-sunken border border-line-subtle px-3 py-2 text-xs font-mono text-ink-primary overflow-x-auto whitespace-pre">
         <code>{fencedMatch[2]}</code>
       </pre>
     );
@@ -27,7 +27,7 @@ export function InlineMarkdown({ text }: { text: string }) {
           return (
             <code
               key={i}
-              className="px-1 py-0.5 rounded text-xs font-mono bg-slate-700 text-slate-200"
+              className="px-1 py-0.5 rounded text-xs font-mono bg-canvas-hover text-ink-primary"
             >
               {part.slice(1, -1)}
             </code>

@@ -34,10 +34,8 @@ export function scoreSession(
     0
   );
 
-  const durationSeconds = Math.min(
-    (Date.now() - session.startTimestamp) / 1000,
-    5400
-  );
+  const effectiveElapsedMs = Date.now() - session.startTimestamp - (session.totalPausedMs ?? 0);
+  const durationSeconds = Math.min(effectiveElapsedMs / 1000, 5400);
 
   return {
     weightedScore,

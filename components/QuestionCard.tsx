@@ -26,14 +26,14 @@ export function QuestionCard({
 }: QuestionCardProps) {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+      <p className="text-xs text-ink-muted font-medium uppercase tracking-wider">
         Question {questionNumber} of {totalQuestions}
       </p>
-      <p className="text-slate-100 text-base leading-relaxed"><InlineMarkdown text={text} /></p>
+      <p className="text-ink-primary text-base leading-relaxed"><InlineMarkdown text={text} /></p>
 
       {highlightedHtml && (
         <div
-          className="rounded-md overflow-x-auto text-sm border border-slate-700 my-2"
+          className="rounded-md overflow-x-auto text-sm border border-line-subtle my-2"
           dangerouslySetInnerHTML={{ __html: highlightedHtml }}
         />
       )}
@@ -48,13 +48,13 @@ export function QuestionCard({
               className={cn(
                 'flex items-start gap-3 w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors',
                 isSelected
-                  ? 'bg-slate-700 border-red-500 text-white ring-2 ring-red-500'
-                  : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-400'
+                  ? 'bg-canvas-hover border-red-500 text-ink-primary ring-2 ring-red-500'
+                  : 'bg-canvas-elevated border-line text-ink-primary hover:border-line-strong'
               )}
             >
               <span className={cn(
                 'flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold',
-                isSelected ? 'border-red-500 bg-red-500 text-white' : 'border-slate-500 text-slate-400'
+                isSelected ? 'border-red-500 bg-red-500 text-white' : 'border-line-strong text-ink-muted'
               )}>
                 {OPTION_LABELS[i]}
               </span>
