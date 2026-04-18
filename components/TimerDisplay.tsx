@@ -15,7 +15,7 @@ export function TimerDisplay({ remaining }: TimerDisplayProps) {
     <span
       className={cn(
         'font-mono font-bold text-lg tabular-nums',
-        isCritical ? 'text-red-400 animate-pulse' : isWarning ? 'text-yellow-400' : 'text-slate-200'
+        isCritical ? 'text-red-400 animate-pulse' : isWarning ? 'text-yellow-400' : 'text-ink-primary'
       )}
     >
       {formatTime(remaining)}

@@ -13,6 +13,7 @@ interface ExamStore {
   setStudentName: (name: string) => void;
   startExam: () => void;
   resumeExam: () => void;
+  pauseExam: () => void;
   abandonExam: () => void;
   setAnswer: (questionId: string, optionIndex: number) => void;
   flagQuestion: (questionId: string) => void;
@@ -38,12 +39,29 @@ export const useExamStore = create<ExamStore>()(
             answers: {},
             flags: {},
             currentIndex: 0,
+            pausedAt: null,
+            totalPausedMs: 0,
           },
           lastResult: null,
         });
       },
 
-      resumeExam: () => {},
+      pauseExam: () => set(state => {
+        if (!state.session || state.session.pausedAt !== null) return state;
+        return { session: { ...state.session, pausedAt: Date.now() } };
+      }),
+
+      resumeExam: () => set(state => {
+        if (!state.session || state.session.pausedAt === null) return state;
+        const pausedMs = Date.now() - state.session.pausedAt;
+        return {
+          session: {
+            ...state.session,
+            pausedAt: null,
+            totalPausedMs: state.session.totalPausedMs + pausedMs,
+          },
+        };
+      }),
 
       abandonExam: () => set({ session: null }),
 

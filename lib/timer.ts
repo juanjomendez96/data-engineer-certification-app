@@ -1,8 +1,14 @@
 export const EXAM_DURATION_SECONDS = 5400; // 90 * 60
 
-export function computeRemaining(startTimestamp: number): number {
-  const elapsed = (Date.now() - startTimestamp) / 1000;
-  return Math.max(0, EXAM_DURATION_SECONDS - elapsed);
+export function computeRemaining(
+  startTimestamp: number,
+  totalPausedMs = 0,
+  pausedAt: number | null = null
+): number {
+  // Freeze the clock at pausedAt when paused
+  const now = pausedAt ?? Date.now();
+  const effectiveElapsed = (now - startTimestamp - totalPausedMs) / 1000;
+  return Math.max(0, EXAM_DURATION_SECONDS - effectiveElapsed);
 }
 
 export function formatTime(seconds: number): string {

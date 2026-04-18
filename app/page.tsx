@@ -89,7 +89,7 @@ function LandingContent() {
   return (
     <>
       {cleared && (
-        <div className="fixed top-4 right-4 z-50 bg-green-800 border border-green-600 text-green-200 text-sm px-4 py-2 rounded-lg shadow-lg">
+        <div className="fixed top-16 right-4 z-50 bg-green-600 dark:bg-green-800 border border-green-500 dark:border-green-600 text-white dark:text-green-200 text-sm px-4 py-2 rounded-lg shadow-lg">
           ✓ All attempts cleared.
         </div>
       )}
@@ -104,14 +104,14 @@ function LandingContent() {
       <main className="max-w-3xl mx-auto px-4 py-16 flex flex-col gap-10">
         {/* Header */}
         <div className="text-center flex flex-col gap-3">
-          <div className="inline-flex items-center gap-2 mx-auto px-3 py-1 rounded-full bg-red-600/20 border border-red-600/40 text-red-400 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 mx-auto px-3 py-1 rounded-full bg-red-600/20 border border-red-600/40 text-red-600 dark:text-red-400 text-xs font-semibold uppercase tracking-wider">
             Practice Exam Simulator
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-100 leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-ink-primary leading-tight">
             Databricks Certified<br />
             <span className="text-[#FF3621]">Data Engineer Associate</span>
           </h1>
-          <p className="text-slate-400 text-sm max-w-md mx-auto">
+          <p className="text-ink-muted text-sm max-w-md mx-auto">
             45 questions · 90 minutes · 70% to pass · Weighted domain scoring
           </p>
         </div>
@@ -119,19 +119,19 @@ function LandingContent() {
         {/* Exam info */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {Object.entries(DOMAIN_CONFIG).map(([key, meta]) => (
-            <div key={key} className="rounded-lg border border-slate-700 bg-[#2D3748] px-4 py-3">
-              <p className="text-xs text-slate-400 mb-1">{Math.round(meta.weight * 100)}% weight</p>
-              <p className="text-sm font-medium text-slate-200 leading-snug">{meta.displayName}</p>
-              <p className="text-xs text-slate-500 mt-1">{meta.count} questions</p>
+            <div key={key} className="rounded-lg border border-line-subtle bg-canvas-surface px-4 py-3">
+              <p className="text-xs text-ink-muted mb-1">{Math.round(meta.weight * 100)}% weight</p>
+              <p className="text-sm font-medium text-ink-primary leading-snug">{meta.displayName}</p>
+              <p className="text-xs text-ink-subtle mt-1">{meta.count} questions</p>
             </div>
           ))}
         </div>
 
         {/* Student name + Start */}
-        <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6 flex flex-col gap-4">
+        <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="student-name" className="text-sm font-medium text-slate-300">
-              Your name <span className="text-red-400">*</span>
+            <label htmlFor="student-name" className="text-sm font-medium text-ink-secondary">
+              Your name <span className="text-red-500 dark:text-red-400">*</span>
             </label>
             <input
               id="student-name"
@@ -143,11 +143,11 @@ function LandingContent() {
               }}
               onKeyDown={e => e.key === 'Enter' && handleStart()}
               placeholder="Enter your name to get started"
-              className={`w-full rounded-lg px-4 py-2.5 bg-slate-800 text-slate-100 placeholder-slate-500 border text-sm outline-none transition-colors
-                ${nameError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-600 focus:border-red-500 focus:ring-1 focus:ring-red-500'}`}
+              className={`w-full rounded-lg px-4 py-2.5 bg-canvas-elevated text-ink-primary placeholder-ink-subtle border text-sm outline-none transition-colors
+                ${nameError ? 'border-red-500 ring-1 ring-red-500' : 'border-line focus:border-red-500 focus:ring-1 focus:ring-red-500'}`}
             />
             {nameError && (
-              <p className="text-red-400 text-xs">Please enter your name before starting.</p>
+              <p className="text-red-500 dark:text-red-400 text-xs">Please enter your name before starting.</p>
             )}
           </div>
 
@@ -157,7 +157,7 @@ function LandingContent() {
           >
             Start Exam
           </button>
-          <p className="text-slate-500 text-xs text-center">
+          <p className="text-ink-subtle text-xs text-center">
             Timer starts immediately. Progress is saved in your browser.
           </p>
         </div>
@@ -166,10 +166,10 @@ function LandingContent() {
         {history.length > 0 && (
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <h2 className="text-slate-300 font-semibold">
+              <h2 className="text-ink-secondary font-semibold">
                 Recent Attempts
                 {filterName && (
-                  <span className="ml-2 text-xs font-normal text-slate-400">
+                  <span className="ml-2 text-xs font-normal text-ink-muted">
                     — {filteredHistory.length} result{filteredHistory.length !== 1 ? 's' : ''}
                   </span>
                 )}
@@ -178,7 +178,7 @@ function LandingContent() {
               <div className="flex items-center gap-2">
                 {confirmClear ? (
                   <>
-                    <span className="text-xs text-slate-400">Clear all attempts?</span>
+                    <span className="text-xs text-ink-muted">Clear all attempts?</span>
                     <button
                       onClick={() => {
                         localStorage.removeItem('examHistory');
@@ -186,13 +186,13 @@ function LandingContent() {
                         setCleared(true);
                         setConfirmClear(false);
                       }}
-                      className="text-xs text-red-400 hover:text-red-300 font-semibold transition-colors"
+                      className="text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-semibold transition-colors"
                     >
                       Yes, clear
                     </button>
                     <button
                       onClick={() => setConfirmClear(false)}
-                      className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                      className="text-xs text-ink-subtle hover:text-ink-secondary transition-colors"
                     >
                       Cancel
                     </button>
@@ -200,7 +200,7 @@ function LandingContent() {
                 ) : (
                   <button
                     onClick={() => setConfirmClear(true)}
-                    className="text-xs text-slate-500 hover:text-red-400 transition-colors"
+                    className="text-xs text-ink-subtle hover:text-red-500 dark:hover:text-red-400 transition-colors"
                   >
                     Clear all
                   </button>
@@ -209,18 +209,18 @@ function LandingContent() {
             </div>
 
             <div className="flex items-center gap-2 w-full">
-              <span className="text-slate-500 text-xs">🔍</span>
+              <span className="text-ink-subtle text-xs">🔍</span>
               <input
                 type="text"
                 value={filterName}
                 onChange={e => setFilterName(e.target.value)}
                 placeholder="Filter by name…"
-                className="rounded-lg border border-slate-600 bg-slate-800 text-slate-200 placeholder-slate-500 text-xs px-3 py-1.5 flex-1 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
+                className="rounded-lg border border-line bg-canvas-elevated text-ink-primary placeholder-ink-subtle text-xs px-3 py-1.5 flex-1 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
               />
               {filterName && (
                 <button
                   onClick={() => setFilterName('')}
-                  className="text-slate-500 hover:text-slate-300 text-xs transition-colors"
+                  className="text-ink-subtle hover:text-ink-secondary text-xs transition-colors"
                   aria-label="Clear filter"
                 >
                   ✕
@@ -229,7 +229,7 @@ function LandingContent() {
             </div>
 
             {filteredHistory.length === 0 ? (
-              <p className="text-slate-500 text-sm">No attempts found for this student.</p>
+              <p className="text-ink-subtle text-sm">No attempts found for this student.</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {filteredHistory.map((entry, i) => {
@@ -241,26 +241,26 @@ function LandingContent() {
                       key={i}
                       onClick={() => hasReviewData && router.push(`/review?i=${originalIndex}`)}
                       disabled={!hasReviewData}
-                      className={`flex items-center justify-between rounded-lg border border-slate-700 bg-[#2D3748] px-4 py-3 text-sm w-full text-left transition-colors
-                        ${hasReviewData ? 'hover:border-slate-500 hover:bg-slate-700 cursor-pointer' : 'cursor-default opacity-70'}`}
+                      className={`flex items-center justify-between rounded-lg border border-line-subtle bg-canvas-surface px-4 py-3 text-sm w-full text-left transition-colors
+                        ${hasReviewData ? 'hover:border-line-strong hover:bg-canvas-hover cursor-pointer' : 'cursor-default opacity-70'}`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className={`font-bold ${entry.passed ? 'text-green-400' : 'text-red-400'}`}>
+                        <span className={`font-bold ${entry.passed ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
                           {entry.passed ? 'PASS' : 'FAIL'}
                         </span>
-                        <span className="text-slate-200 font-mono tabular-nums">
+                        <span className="text-ink-primary font-mono tabular-nums">
                           {entry.percentage.toFixed(1)}%
                         </span>
                         {entry.studentName && (
-                          <span className="text-slate-400 text-xs">{entry.studentName}</span>
+                          <span className="text-ink-muted text-xs">{entry.studentName}</span>
                         )}
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-slate-500 text-xs">
+                        <span className="text-ink-subtle text-xs">
                           {formatDuration(entry.durationSeconds)} · {new Date(entry.answeredAt).toLocaleDateString()}
                         </span>
                         {hasReviewData && (
-                          <span className="text-slate-500 text-xs">→</span>
+                          <span className="text-ink-subtle text-xs">→</span>
                         )}
                       </div>
                     </button>

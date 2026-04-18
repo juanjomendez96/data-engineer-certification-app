@@ -57,12 +57,12 @@ function ReviewContent() {
   if (notFound) {
     return (
       <main className="max-w-3xl mx-auto px-4 py-16 text-center flex flex-col gap-4">
-        <p className="text-slate-400">
+        <p className="text-ink-muted">
           This attempt could not be loaded. It may have been recorded before full review data was saved.
         </p>
         <button
           onClick={() => router.push('/')}
-          className="mx-auto px-6 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm transition-colors"
+          className="mx-auto px-6 py-2 rounded-lg bg-canvas-hover hover:bg-canvas-elevated text-ink-primary text-sm transition-colors"
         >
           ← Back to dashboard
         </button>
@@ -72,7 +72,7 @@ function ReviewContent() {
 
   if (!entry) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-400">
+      <div className="min-h-screen flex items-center justify-center text-ink-muted">
         Loading…
       </div>
     );
@@ -101,42 +101,42 @@ function ReviewContent() {
       {/* Back */}
       <button
         onClick={() => router.push('/')}
-        className="self-start flex items-center gap-2 text-slate-400 hover:text-slate-200 text-sm transition-colors"
+        className="self-start flex items-center gap-2 text-ink-muted hover:text-ink-primary text-sm transition-colors"
       >
         ← Back to dashboard
       </button>
 
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-bold text-slate-100">Attempt Review</h1>
-        <p className="text-slate-400 text-sm">
+        <h1 className="text-xl font-bold text-ink-primary">Attempt Review</h1>
+        <p className="text-ink-muted text-sm">
           {entry.studentName} · {new Date(entry.answeredAt).toLocaleString()}
         </p>
       </div>
 
       {/* Score */}
-      <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6 flex flex-col sm:flex-row gap-6 items-center">
+      <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6 flex flex-col sm:flex-row gap-6 items-center">
         <ScoreGauge percentage={entry.percentage} passed={entry.passed} />
         <div className="flex flex-col gap-2 text-sm">
-          <div className={`text-2xl font-bold ${entry.passed ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`text-2xl font-bold ${entry.passed ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
             {entry.passed ? '✓ PASS' : '✗ FAIL'}
           </div>
-          <div className="text-slate-300">
-            Score: <span className="font-mono font-semibold text-slate-100">{entry.percentage.toFixed(1)}%</span>
+          <div className="text-ink-secondary">
+            Score: <span className="font-mono font-semibold text-ink-primary">{entry.percentage.toFixed(1)}%</span>
           </div>
-          <div className="text-slate-400">Passing threshold: <span className="font-mono">70.0%</span></div>
-          <div className="text-slate-400">
-            Answered: <span className="text-slate-200">{totalCorrect}/{questions.length} correct</span>
+          <div className="text-ink-muted">Passing threshold: <span className="font-mono">70.0%</span></div>
+          <div className="text-ink-muted">
+            Answered: <span className="text-ink-primary">{totalCorrect}/{questions.length} correct</span>
           </div>
-          <div className="text-slate-400">
-            Duration: <span className="text-slate-200">{formatDuration(entry.durationSeconds)}</span>
+          <div className="text-ink-muted">
+            Duration: <span className="text-ink-primary">{formatDuration(entry.durationSeconds)}</span>
           </div>
         </div>
       </div>
 
       {/* Domain breakdown */}
-      <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6 flex flex-col gap-4">
-        <h2 className="text-slate-100 font-semibold text-lg">Domain Breakdown</h2>
+      <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6 flex flex-col gap-4">
+        <h2 className="text-ink-primary font-semibold text-lg">Domain Breakdown</h2>
         {domainResults.map(d => (
           <DomainBar
             key={d.key}
@@ -150,7 +150,7 @@ function ReviewContent() {
       </div>
 
       {/* Full question review */}
-      <div className="rounded-xl border border-slate-700 bg-[#2D3748] p-6">
+      <div className="rounded-xl border border-line-subtle bg-canvas-surface p-6">
         <ReviewAccordion
           questions={questions}
           answers={entry.answers}
@@ -164,7 +164,7 @@ function ReviewContent() {
 export default function ReviewPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center text-slate-400">
+      <div className="min-h-screen flex items-center justify-center text-ink-muted">
         Loading…
       </div>
     }>
